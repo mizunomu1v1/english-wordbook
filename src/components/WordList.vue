@@ -1,96 +1,144 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const words = [
+  { text: 'Principles', translation: '原則', tag: `#Material Design` },
+  { text: 'Physical', translation: '物理的な', tag: `#Material Design` },
+  { text: 'display: flex;', translation: '横並びに配置する', tag: `#CSSタグ` },
+  { text: 'flex-direction: column;', translation: '縦並びに配置する', tag: `#CSSタグ` },
+]
+const searchQuery = ''
+
+// const addWord = () => {
+//   const word = prompt('新しい単語を入力してください')
+//   const translation = prompt('その翻訳を入力してください')
+//   if (word && translation) {
+//     words.push({ text: word, translation })
+//   }
+// }
+
+const isDetailsVisible = ref(false)
+const toggleDetails = () => {
+  isDetailsVisible.value = !isDetailsVisible.value
+}
+</script>
+
 <template>
   <div class="main-container">
-    <!-- 左カラム: ライブラリ風 -->
-    <aside class="sidebar">
-      <h2>フォルダ</h2>
-      <ul class="folder-list">
-        <li
-          v-for="(folder, index) in folders"
-          :key="index"
-          @click="selectFolder(index)"
-          :class="{ active: selectedFolder === index }"
-        >
-          {{ folder.name }}
-        </li>
-      </ul>
-      <button class="add-folder" @click="addFolder">＋ フォルダ追加</button>
-    </aside>
-
-    <!-- 右カラム: Issue風の単語一覧 -->
     <main class="content">
       <header class="content-header">
-        <h1>単語一覧</h1>
+        <h1>📌単語一覧</h1>
         <div class="header-actions">
-          <button @click="addWord">＋ 単語を登録</button>
-          <input type="text" v-model="searchQuery" placeholder="🔍 検索" />
+          <!-- 検索窓 -->
+          <input
+            type="text"
+            placeholder="🔍 単語を検索"
+            v-model="searchQuery"
+            class="search-input"
+          />
+
+          <!-- 単語追加ボタン -->
+          <button class="add-word-btn">＋ 単語追加</button>
+          <!-- <button class="add-word-btn" @click="addWord">＋ 単語追加</button> -->
         </div>
       </header>
 
-      <ul class="word-list">
-        <li v-for="(word, index) in filteredWords" :key="index" class="word-item">
+      <!-- <ul class="word-list">
+        <li v-for="(word, index) in words" :key="index" class="word-item">
           <div class="word-details">
-            <strong class="word-text">{{ word.text }}</strong>
-            <p class="word-translation">翻訳: {{ word.translation }}</p>
+            <p class="word-text">{{ word.text }}</p>
+            <p class="word-translation">： {{ word.translation }}</p>
           </div>
           <div class="word-actions">
-            <button @click="editWord(index)">編集</button>
-            <button @click="deleteWord(index)">覚えた</button>
+            <button>詳細</button>
+            <button>編集</button>
           </div>
         </li>
-      </ul>
+      </ul> -->
+
+      <li v-for="(word, index) in words" :key="index" class="word-item">
+        <div class="word-header">
+          <div class="words">
+            <p class="bold">{{ word.text }}</p>
+            <p>{{ word.translation }}</p>
+            <div class="tag">
+              <p>{{ word.tag }}</p>
+            </div>
+          </div>
+          <div class="word-actions">
+            <button @click="toggleDetails" class="detail-btn">詳細</button>
+            <button class="detail-btn">編集</button>
+            <button class="detail-btn">削除</button>
+          </div>
+        </div>
+
+        <!-- 詳細部分（スライド表示） -->
+        <div
+          v-if="isDetailsVisible"
+          class="word-details"
+          :style="{ height: isDetailsVisible ? 'auto' : '0px' }"
+        >
+          <p><strong>例： Physical world is tangible</strong></p>
+          <p><strong>訳：物理的な世界について</strong></p>
+        </div>
+      </li>
     </main>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  data() {
-    return {
-      folders: [{ name: '全ての単語' }, { name: '未学習' }, { name: '覚えた単語' }],
-      selectedFolder: 0,
-      words: [
-        { text: 'Principles', translation: '原則' },
-        { text: 'Physical', translation: '物理的な' },
-      ],
-      searchQuery: '',
-    }
-  },
-  computed: {
-    filteredWords() {
-      const query = this.searchQuery.trim().toLowerCase()
-      return this.words.filter(
-        (word) => word.text.toLowerCase().includes(query) || word.translation.includes(query),
-      )
-    },
-  },
-  methods: {
-    selectFolder(index) {
-      this.selectedFolder = index
-    },
-    addFolder() {
-      const folderName = prompt('新しいフォルダ名を入力してください')
-      if (folderName) {
-        this.folders.push({ name: folderName })
-      }
-    },
-    addWord() {
-      const word = prompt('新しい単語を入力してください')
-      const translation = prompt('その翻訳を入力してください')
-      if (word && translation) {
-        this.words.push({ text: word, translation })
-      }
-    },
-    editWord(index) {
-      console.log('Edit word at index:', index)
-    },
-    deleteWord(index) {
-      console.log('Mark word as learned:', index)
-    },
-  },
+<style scoped>
+.bold {
+  font-weight: bold;
 }
-</script>
+.tag {
+  color: #696969; /*文字色*/
+  display: flex;
+  gap: 5px;
+}
 
-<style>
+.word-item {
+  padding: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* スライド効果用 */
+  transition: height 0.3s ease; /* スライドアニメーション */
+}
+
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-btn {
+  padding: 5px 10px;
+  background: #ddd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.detail-btn:hover {
+  background: #bbb;
+}
+
+.words {
+  display: flex;
+  gap: 10px;
+}
+
+.word-details {
+  flex-direction: column;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: #f9f9f9;
+  overflow: hidden; /* スライドアニメーション時に余分な内容を隠す */
+}
+
 /**---------------------------------------------------------*/
 /* アプリ全体の配置設定 */
 /**---------------------------------------------------------*/
@@ -124,6 +172,34 @@ export default {
   margin-bottom: 20px; /* 下の余白 */
 }
 
+.header-actions {
+  display: flex; /* 横並びにする */
+  /* flex-direction: column; 　にすると縦*/
+  gap: 10px; /* 要素間の余白を20pxに広げる */
+}
+
+/* 検索窓 */
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* 単語追加ボタン */
+.add-word-btn {
+  padding: 10px;
+  background: #ff6f61; /* 目立つ赤系の色 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
 /**---------------------------------------------------------*/
 /* 単語一覧リスト */
 /** いまのとこ効果なし。けすかも */
@@ -132,12 +208,17 @@ export default {
   list-style: none; /* リストマーカーを削除 */
   padding: 0; /* 内側の余白をリセット */
 }
+.word-details {
+  display: flex; /* 左右カラムを横並びに配置する */
+}
 
 /**---------------------------------------------------------*/
 /* 単語カード */
 /**---------------------------------------------------------*/
 .word-item {
-  display: flex; /* 単語カードの中身を水平方向に並べる */
+  /* display: flex;  */
+  /* 単語カードの中身を水平方向に並べる */
+
   justify-content: space-between; /* div要素を左右に分ける */
   align-items: center; /* 垂直方向の中央揃え */
   padding: 15px; /* 内側の余白 */

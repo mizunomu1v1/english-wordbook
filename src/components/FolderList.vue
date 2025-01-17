@@ -1,8 +1,21 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+// テストデータ
+const folders = [{ name: '全ての単語' }, { name: '#Material Design' }, { name: '#CSSタグ' }]
+
+const selectedFolder = ref(0)
+const selectFolder = (index: number) => {
+  if (selectedFolder.value !== undefined) {
+    selectedFolder.value = index
+  }
+}
+</script>
+
 <template>
   <div class="main-container">
-    <!-- 左カラム: ライブラリ風 -->
     <aside class="sidebar">
-      <h2>フォルダ</h2>
+      <h2>タグ</h2>
       <ul class="folder-list">
         <li
           v-for="(folder, index) in folders"
@@ -13,69 +26,11 @@
           {{ folder.name }}
         </li>
       </ul>
-      <button class="add-folder" @click="addFolder">＋ フォルダ追加</button>
+      <!-- <button class="add-folder" @click="addFolder">＋ フォルダ追加</button> -->
+      <button class="add-folder">追加</button>
     </aside>
-
-    <!-- 右カラム: Issue風の単語一覧 -->
-    <main class="content">
-      <header class="content-header">
-        <h1>単語一覧</h1>
-        <div class="header-actions">
-          <button @click="addWord">＋ 単語を登録</button>
-          <input type="text" v-model="searchQuery" placeholder="🔍 検索" />
-        </div>
-      </header>
-    </main>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  data() {
-    return {
-      folders: [{ name: '全ての単語' }, { name: '未学習' }, { name: '覚えた単語' }],
-      selectedFolder: 0,
-      words: [
-        { text: 'Principles', translation: '原則' },
-        { text: 'Physical', translation: '物理的な' },
-      ],
-      searchQuery: '',
-    }
-  },
-  computed: {
-    filteredWords() {
-      const query = this.searchQuery.trim().toLowerCase()
-      return this.words.filter(
-        (word) => word.text.toLowerCase().includes(query) || word.translation.includes(query),
-      )
-    },
-  },
-  methods: {
-    selectFolder(index) {
-      this.selectedFolder = index
-    },
-    addFolder() {
-      const folderName = prompt('新しいフォルダ名を入力してください')
-      if (folderName) {
-        this.folders.push({ name: folderName })
-      }
-    },
-    addWord() {
-      const word = prompt('新しい単語を入力してください')
-      const translation = prompt('その翻訳を入力してください')
-      if (word && translation) {
-        this.words.push({ text: word, translation })
-      }
-    },
-    editWord(index) {
-      console.log('Edit word at index:', index)
-    },
-    deleteWord(index) {
-      console.log('Mark word as learned:', index)
-    },
-  },
-}
-</script>
 
 <style>
 /**---------------------------------------------------------*/
