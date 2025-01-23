@@ -27,7 +27,7 @@ const toggleDetails = () => {
   <div class="main-container">
     <main class="content">
       <header class="content-header">
-        <h1>📌単語一覧</h1>
+        <h1>🧸単語一覧</h1>
         <div class="header-actions">
           <!-- 検索窓 -->
           <input
@@ -157,7 +157,7 @@ const toggleDetails = () => {
   left: 260px; /* 左カラムの幅分だけ右にずらす */
   width: calc(100% - 260px); /* 残りの幅を右カラムに割り当てる */
   padding: 20px; /* 内側の余白 */
-  background: #f9f9f9; /* 背景色 */
+  background: #fff; /* 背景色 f9f9f9*/
   height: 100vh; /* 画面全体の高さ */
   overflow-y: auto; /* 縦スクロールを許可 */
 }
@@ -190,7 +190,7 @@ const toggleDetails = () => {
 /* 単語追加ボタン */
 .add-word-btn {
   padding: 10px;
-  background: #ff6f61; /* 目立つ赤系の色 */
+  background: #000324db; /* 目立つ赤系の色 */
   color: white;
   border: none;
   border-radius: 8px;

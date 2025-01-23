@@ -2,7 +2,12 @@
 import { ref } from 'vue'
 
 // テストデータ
-const folders = [{ name: '全ての単語' }, { name: '#Material Design' }, { name: '#CSSタグ' }]
+const folders = [
+  { name: '#テスト１' },
+  { name: '#テスト２' },
+  { name: '#Material Design' },
+  { name: '#CSS' },
+]
 
 const selectedFolder = ref(0)
 const selectFolder = (index: number) => {
@@ -26,8 +31,10 @@ const selectFolder = (index: number) => {
           {{ folder.name }}
         </li>
       </ul>
-      <!-- <button class="add-folder" @click="addFolder">＋ フォルダ追加</button> -->
-      <button class="add-folder">追加</button>
+      <div>
+        <!-- 歯車アイコン -->
+        <CogIcon class="gear-icon" />
+      </div>
     </aside>
   </div>
 </template>
@@ -47,7 +54,7 @@ const selectFolder = (index: number) => {
 /**---------------------------------------------------------*/
 .sidebar {
   width: 260px; /* 横幅を固定 */
-  background: #ffe4e1; /* 背景色: サーモンピンク */
+  background-image: linear-gradient(50deg, rgba(251, 253, 191, 1), rgba(226, 207, 255, 1));
   padding: 20px; /* 内側の余白 */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 影を付ける */
   position: absolute; /* 画面左上に固定するための配置 */
@@ -68,37 +75,54 @@ const selectFolder = (index: number) => {
 .folder-list {
   list-style: none; /* リストのデフォルトの点を削除 */
   padding: 0; /* 内側の余白をリセット */
+  display: flex;
+  flex-wrap: wrap;
 }
 
 /**---------------------------------------------------------*/
 /* フォルダリストのデザイン */
 /**---------------------------------------------------------*/
 .folder-list li {
-  padding: 10px; /* 内側の余白 */
-  margin-bottom: 5px; /* 下の余白 */
-  background: white; /* 背景色: 白 */
-  border-radius: 4px; /* 角を丸くする */
-  cursor: pointer; /* マウスカーソルをポインターに */
-  text-align: center; /* テキストを中央揃え */
+  display: inline-block;
+  margin: 0 0.1em 0.5em 0;
+  padding: 0.4em;
+  line-height: 1;
+  text-decoration: none;
+  background-color: #fff;
+  /* border: 0.5px solid #000324db;
+  border-radius: 0.25em; */
+  mix-blend-mode: multiply;
 }
 
 /**---------------------------------------------------------*/
 /* フォルダ選択時 */
 /**---------------------------------------------------------*/
 .folder-list li.active {
-  background: #ff6f61; /* アクティブ時の背景色 */
+  background: #000324db; /* アクティブ時の背景色 */
   color: white; /* テキスト色 */
+  mix-blend-mode: multiply;
+  border-radius: 0.5em;
 }
 
 /**---------------------------------------------------------*/
 /* フォルダ追加ボタン */
 /**---------------------------------------------------------*/
-.add-folder {
-  margin-top: 20px; /* 上の余白 */
-  padding: 10px; /* 内側の余白 */
-  background: white; /* 背景色: 白 */
-  border: none; /* ボーダーを削除 */
-  border-radius: 4px; /* 角を丸くする */
-  cursor: pointer; /* ポインターに変更 */
+
+.gear {
+  width: 500px; /* アイコンの幅 */
+  height: 500px; /* アイコンの高さ */
+}
+
+.gear-icon > svg {
+  width: 30px; /* アイコンの幅 */
+  height: 30px; /* アイコンの高さ */
+  color: #9e9e9eec; /* アイコンの色 */
+  cursor: pointer; /* ポインターモードに */
+  transition: transform 0.3s ease; /* アニメーション */
+  /* filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.2)); */
+}
+
+.gear-icon:hover > svg {
+  transform: rotate(45deg); /* ホバー時に回転 */
 }
 </style>
