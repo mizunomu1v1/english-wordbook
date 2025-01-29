@@ -1,11 +1,37 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useTagStore } from '@/stores/tagStore'
+import { storeToRefs } from 'pinia'
 
 const words = [
-  { text: 'Principles', translation: '原則', tag: `#Material Design` },
-  { text: 'Physical', translation: '物理的な', tag: `#Material Design` },
-  { text: 'display: flex;', translation: '横並びに配置する', tag: `#CSSタグ` },
-  { text: 'flex-direction: column;', translation: '縦並びに配置する', tag: `#CSSタグ` },
+  {
+    text: 'Principles',
+    translation: '原則',
+    tag: `Material Design`,
+    example: 'Physical world is tangible',
+    reason: '物理的な世界について',
+  },
+  {
+    text: 'Physical',
+    translation: '物理的な',
+    tag: `Material Design`,
+    example: '2-1',
+    reason: '2-2',
+  },
+  {
+    text: 'display: flex;',
+    translation: '横並びに配置する',
+    tag: `CSSタグ`,
+    example: '3-1',
+    reason: '3-2',
+  },
+  {
+    text: 'flex-direction: column;',
+    translation: '縦並びに配置する',
+    tag: `CSSタグ`,
+    example: '4-1',
+    reason: '4-2',
+  },
 ]
 const searchQuery = ''
 
@@ -17,10 +43,21 @@ const searchQuery = ''
 //   }
 // }
 
-const isDetailsVisible = ref(false)
-const toggleDetails = () => {
-  isDetailsVisible.value = !isDetailsVisible.value
+// 単語の数だけ配列を作って、初期値をfalesにする
+const isDetailsVisible = ref(new Array(words.length).fill(false))
+
+// 指定されたindexのみtrueにする
+const toggleDetails = (index: number) => {
+  isDetailsVisible.value[index] = !isDetailsVisible.value[index]
 }
+
+// // タグストア
+// const tagStore = useTagStore()
+// const { selectedTag } = storeToRefs(tagStore)
+
+// const filteredWords = !!selectedTag.value
+//   ? words.filter((word) => word.tag === selectedTag.value)
+//   : words
 </script>
 
 <template>
@@ -43,30 +80,18 @@ const toggleDetails = () => {
         </div>
       </header>
 
-      <!-- <ul class="word-list">
-        <li v-for="(word, index) in words" :key="index" class="word-item">
-          <div class="word-details">
-            <p class="word-text">{{ word.text }}</p>
-            <p class="word-translation">： {{ word.translation }}</p>
-          </div>
-          <div class="word-actions">
-            <button>詳細</button>
-            <button>編集</button>
-          </div>
-        </li>
-      </ul> -->
-
+      <!-- 単語一覧 -->
       <li v-for="(word, index) in words" :key="index" class="word-item">
         <div class="word-header">
           <div class="words">
             <p class="bold">{{ word.text }}</p>
             <p>{{ word.translation }}</p>
             <div class="tag">
-              <p>{{ word.tag }}</p>
+              <p>#{{ word.tag }}</p>
             </div>
           </div>
           <div class="word-actions">
-            <button @click="toggleDetails" class="detail-btn">詳細</button>
+            <button @click="toggleDetails(index)" class="detail-btn">詳細</button>
             <button class="detail-btn">編集</button>
             <button class="detail-btn">削除</button>
           </div>
@@ -74,12 +99,16 @@ const toggleDetails = () => {
 
         <!-- 詳細部分（スライド表示） -->
         <div
-          v-if="isDetailsVisible"
+          v-if="isDetailsVisible[index]"
           class="word-details"
-          :style="{ height: isDetailsVisible ? 'auto' : '0px' }"
+          :style="{ height: isDetailsVisible[index] ? 'auto' : '0px' }"
         >
-          <p><strong>例： Physical world is tangible</strong></p>
-          <p><strong>訳：物理的な世界について</strong></p>
+          <p>
+            <strong>例：{{ word.example }}</strong>
+          </p>
+          <p>
+            <strong>訳：{{ word.reason }}</strong>
+          </p>
         </div>
       </li>
     </main>
@@ -134,6 +163,7 @@ const toggleDetails = () => {
 .word-details {
   flex-direction: column;
   padding: 10px;
+  margin-top: 10px; /* 上の余白を10pxに設定 */
   border-top: 1px solid #ddd;
   background: #f9f9f9;
   overflow: hidden; /* スライドアニメーション時に余分な内容を隠す */

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import FolderList from '@/components/FolderList.vue'
+import TagList from '@/components/TagList.vue'
 import WordList from '@/components/WordList.vue'
 </script>
 
 <template>
   <div>
     <div>
-      <FolderList />
+      <TagList />
       <WordList />
     </div>
   </div>

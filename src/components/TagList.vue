@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useTagStore } from '@/stores/tagStore'
 
 // テストデータ
 const folders = [
-  { name: '#テスト１' },
-  { name: '#テスト２' },
-  { name: '#Material Design' },
-  { name: '#CSS' },
+  { name: 'テスト１' },
+  { name: 'テスト２' },
+  { name: 'Material Design' },
+  { name: 'CSS' },
 ]
 
+// タグストア
+const tagStore = useTagStore()
+
+// フォルダ選択関数
 const selectedFolder = ref(0)
-const selectFolder = (index: number) => {
+const setSelectFolder = (index: number, tag: string) => {
   if (selectedFolder.value !== undefined) {
+    tagStore.setSelectedTag(tag)
     selectedFolder.value = index
   }
 }
@@ -25,10 +31,10 @@ const selectFolder = (index: number) => {
         <li
           v-for="(folder, index) in folders"
           :key="index"
-          @click="selectFolder(index)"
+          @click="setSelectFolder(index, folder.name)"
           :class="{ active: selectedFolder === index }"
         >
-          {{ folder.name }}
+          #{{ folder.name }}
         </li>
       </ul>
       <div>
@@ -62,6 +68,7 @@ const selectFolder = (index: number) => {
   left: 0; /* 左端を基準に */
   height: 100vh; /* 高さを画面全体に固定 */
 }
+
 /**---------------------------------------------------------*/
 /*  左カラムタイトル */
 /**---------------------------------------------------------*/
@@ -77,6 +84,7 @@ const selectFolder = (index: number) => {
   padding: 0; /* 内側の余白をリセット */
   display: flex;
   flex-wrap: wrap;
+  cursor: pointer; /* ポインターモードに */
 }
 
 /**---------------------------------------------------------*/
@@ -89,8 +97,6 @@ const selectFolder = (index: number) => {
   line-height: 1;
   text-decoration: none;
   background-color: #fff;
-  /* border: 0.5px solid #000324db;
-  border-radius: 0.25em; */
   mix-blend-mode: multiply;
 }
 
@@ -102,17 +108,12 @@ const selectFolder = (index: number) => {
   color: white; /* テキスト色 */
   mix-blend-mode: multiply;
   border-radius: 0.5em;
+  cursor: pointer; /* ポインターモードに */
 }
 
 /**---------------------------------------------------------*/
-/* フォルダ追加ボタン */
+/* フォルダ設定ボタン */
 /**---------------------------------------------------------*/
-
-.gear {
-  width: 500px; /* アイコンの幅 */
-  height: 500px; /* アイコンの高さ */
-}
-
 .gear-icon > svg {
   width: 30px; /* アイコンの幅 */
   height: 30px; /* アイコンの高さ */
