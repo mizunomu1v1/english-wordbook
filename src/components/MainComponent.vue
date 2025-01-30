@@ -4,12 +4,8 @@ import WordList from '@/components/WordList.vue'
 </script>
 
 <template>
-  <div>
-    <div>
-      <TagList />
-      <WordList />
-    </div>
-  </div>
+  <TagList />
+  <WordList />
 </template>
 
 <style scoped></style>

@@ -6,16 +6,10 @@ export const useTagStore = defineStore('tagStore', {
     selectedTag: undefined as string | undefined,
   }),
 
-  getters: {
-    //  filteredWords: (state) => {
-    //   return state.selectedTag
-    //   ? words.filter((word) => word.tag === selectedTag.value)
-    //   : words
-    //  }
-  },
+  getters: {},
   // stateで定義した値を操作したり、取得する関数
   actions: {
-    setSelectedTag(newSelectedTag: string | undefined) {
+    setTag(newSelectedTag: string | undefined) {
       this.selectedTag = newSelectedTag
     },
   },

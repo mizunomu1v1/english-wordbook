@@ -13,12 +13,20 @@ const folders = [
 // タグストア
 const tagStore = useTagStore()
 
-// フォルダ選択関数
-const selectedFolder = ref(0)
-const setSelectFolder = (index: number, tag: string) => {
-  if (selectedFolder.value !== undefined) {
-    tagStore.setSelectedTag(tag)
-    selectedFolder.value = index
+// 画面上の選択タグ
+const selectedTag = ref<number | undefined>(undefined)
+/**
+ * タグクリック時の処理
+ */
+const clickTag = (index: number, tag: string) => {
+  if (selectedTag.value === index) {
+    // すでに選択されているタグをクリックされた場合、解除する
+    tagStore.setTag(undefined)
+    selectedTag.value = undefined
+  } else {
+    // 別のタグをクリックされた場合、セットする
+    tagStore.setTag(tag)
+    selectedTag.value = index
   }
 }
 </script>
@@ -26,13 +34,13 @@ const setSelectFolder = (index: number, tag: string) => {
 <template>
   <div class="main-container">
     <aside class="sidebar">
-      <h2>タグ</h2>
+      <h2 class="content-title">タグ</h2>
       <ul class="folder-list">
         <li
           v-for="(folder, index) in folders"
           :key="index"
-          @click="setSelectFolder(index, folder.name)"
-          :class="{ active: selectedFolder === index }"
+          @click="clickTag(index, folder.name)"
+          :class="{ active: selectedTag === index }"
         >
           #{{ folder.name }}
         </li>
@@ -85,6 +93,10 @@ const setSelectFolder = (index: number, tag: string) => {
   display: flex;
   flex-wrap: wrap;
   cursor: pointer; /* ポインターモードに */
+}
+
+.content-title {
+  font-weight: normal;
 }
 
 /**---------------------------------------------------------*/

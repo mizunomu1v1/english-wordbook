@@ -1,70 +1,26 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useTagStore } from '@/stores/tagStore'
-import { storeToRefs } from 'pinia'
+import { useWordStore } from '@/stores/wordStore'
 
-const words = [
-  {
-    text: 'Principles',
-    translation: '原則',
-    tag: `Material Design`,
-    example: 'Physical world is tangible',
-    reason: '物理的な世界について',
-  },
-  {
-    text: 'Physical',
-    translation: '物理的な',
-    tag: `Material Design`,
-    example: '2-1',
-    reason: '2-2',
-  },
-  {
-    text: 'display: flex;',
-    translation: '横並びに配置する',
-    tag: `CSSタグ`,
-    example: '3-1',
-    reason: '3-2',
-  },
-  {
-    text: 'flex-direction: column;',
-    translation: '縦並びに配置する',
-    tag: `CSSタグ`,
-    example: '4-1',
-    reason: '4-2',
-  },
-]
 const searchQuery = ''
 
-// const addWord = () => {
-//   const word = prompt('新しい単語を入力してください')
-//   const translation = prompt('その翻訳を入力してください')
-//   if (word && translation) {
-//     words.push({ text: word, translation })
-//   }
-// }
+// ストア
+const wordStore = useWordStore()
 
 // 単語の数だけ配列を作って、初期値をfalesにする
-const isDetailsVisible = ref(new Array(words.length).fill(false))
+const isDetailsVisible = ref(new Array(wordStore.words.length).fill(false))
 
 // 指定されたindexのみtrueにする
 const toggleDetails = (index: number) => {
   isDetailsVisible.value[index] = !isDetailsVisible.value[index]
 }
-
-// // タグストア
-// const tagStore = useTagStore()
-// const { selectedTag } = storeToRefs(tagStore)
-
-// const filteredWords = !!selectedTag.value
-//   ? words.filter((word) => word.tag === selectedTag.value)
-//   : words
 </script>
 
 <template>
   <div class="main-container">
     <main class="content">
       <header class="content-header">
-        <h1>🧸単語一覧</h1>
+        <h1 class="content-title">🧸単語一覧</h1>
         <div class="header-actions">
           <!-- 検索窓 -->
           <input
@@ -81,13 +37,13 @@ const toggleDetails = (index: number) => {
       </header>
 
       <!-- 単語一覧 -->
-      <li v-for="(word, index) in words" :key="index" class="word-item">
+      <li v-for="(word, index) in wordStore.filteredWords" :key="index" class="word-item">
         <div class="word-header">
           <div class="words">
-            <p class="bold">{{ word.text }}</p>
-            <p>{{ word.translation }}</p>
+            <p class="word-h">{{ word.entry }}</p>
+            <p>{{ word.meaning }}</p>
             <div class="tag">
-              <p>#{{ word.tag }}</p>
+              <p v-for="(tag, index) in word.tags" :key="index">#{{ tag }}</p>
             </div>
           </div>
           <div class="word-actions">
@@ -103,12 +59,7 @@ const toggleDetails = (index: number) => {
           class="word-details"
           :style="{ height: isDetailsVisible[index] ? 'auto' : '0px' }"
         >
-          <p>
-            <strong>例：{{ word.example }}</strong>
-          </p>
-          <p>
-            <strong>訳：{{ word.reason }}</strong>
-          </p>
+          <p class="word-details-p">{{ word.memo }}</p>
         </div>
       </li>
     </main>
@@ -161,12 +112,18 @@ const toggleDetails = (index: number) => {
 }
 
 .word-details {
-  flex-direction: column;
-  padding: 10px;
+  padding: 10px; /* 内側の余白 */
   margin-top: 10px; /* 上の余白を10pxに設定 */
   border-top: 1px solid #ddd;
   background: #f9f9f9;
   overflow: hidden; /* スライドアニメーション時に余分な内容を隠す */
+  white-space: pre-line; /* テキスト内の改行を反映 */
+  color: #000324db; /* テキスト色 */
+}
+
+.word-h {
+  display: inline;
+  background-image: linear-gradient(rgba(0, 0, 0, 0) 70%, rgba(252, 81, 132, 0.356) 50%);
 }
 
 /**---------------------------------------------------------*/
@@ -196,10 +153,14 @@ const toggleDetails = (index: number) => {
 /* 右カラムヘッダ */
 /**---------------------------------------------------------*/
 .content-header {
-  display: flex; /* 水平方向に並べる */
+  display: flex;
   justify-content: space-between; /* 左右に要素を配置 */
   align-items: center; /* 垂直方向の中央揃え */
   margin-bottom: 20px; /* 下の余白 */
+}
+
+.content-title {
+  font-weight: normal;
 }
 
 .header-actions {
@@ -220,7 +181,7 @@ const toggleDetails = (index: number) => {
 /* 単語追加ボタン */
 .add-word-btn {
   padding: 10px;
-  background: #000324db; /* 目立つ赤系の色 */
+  background: #000324db;
   color: white;
   border: none;
   border-radius: 8px;
